@@ -14,6 +14,12 @@ const gencompchoice=()=>{
 
 }
 
+const triggerMsgAnimation = () => {
+    msg.classList.remove("animate-msg");
+    void msg.offsetWidth; // trigger reflow
+    msg.classList.add("animate-msg");
+}
+
 const showWinner=(userwin,userchoice,compchoice)=>{
     if (userwin){
         userscore++;
@@ -22,7 +28,7 @@ const showWinner=(userwin,userchoice,compchoice)=>{
         msg.style.backgroundColor="green";
         msg.classList.remove("hide");
         msgcontainer.classList.remove("hide");
-
+        triggerMsgAnimation();
     }
     else{
         compscore++;
@@ -31,6 +37,7 @@ const showWinner=(userwin,userchoice,compchoice)=>{
         msg.style.backgroundColor="red";
         msg.classList.remove("hide");
         msgcontainer.classList.remove("hide");
+        triggerMsgAnimation();
     }
 }
 
@@ -45,6 +52,7 @@ const playyourgame=(userchoice)=>{
         msg.classList.remove("hide");
         msg.style.backgroundColor="#B89E97";
         msgcontainer.classList.remove("hide");
+        triggerMsgAnimation();
     }
     else{
         let userwin=true;

@@ -1,9 +1,15 @@
-*{
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
     text-align: center;
     background-color: #DECCCC;
+    font-family: sans-serif;
 }
+
 h1{
    height: 5rem;
    background-color: #B89E97;
@@ -17,6 +23,7 @@ h1{
     justify-content: center;
     align-items: center;    
     border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 img{
     height: 150px;
@@ -30,13 +37,17 @@ img{
     justify-content: center;
     align-items: center;
     gap: 2rem;
-   
+    flex-wrap: wrap;
 }
 .choice:hover{
-    opacity: 0.5;
     cursor: pointer;
-    background-color: black;
-
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.choice:active{
+    transform: translateY(2px) scale(0.95);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 .scoreboard{
     margin-top: 10vh;
@@ -55,14 +66,57 @@ img{
     font-size: 2rem;
     line-height: 2rem;
     background-color: #B89E97;
-    display: inline;
+    display: inline-block;
     padding: 1rem;
     border-radius: 1rem;
+    transition: all 0.3s ease;
+}
 
+.animate-msg {
+    animation: slideUpFadeIn 0.5s ease forwards;
+}
+
+@keyframes slideUpFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 .msgcontainer{
     margin-top: 5rem;
 }
 .hide {
     display:none !important;
+}
+
+/* Responsiveness */
+@media (max-width: 600px) {
+    .choice {
+        height: 120px;
+        width: 120px;
+    }
+    img {
+        height: 105px;
+        width: 105px;
+    }
+    .choices {
+        gap: 1rem;
+        margin-top: 5vh;
+    }
+    .scoreboard {
+        margin-top: 5vh;
+        gap: 1rem;
+        font-size: 1.5rem;
+    }
+    .score {
+        font-size: 1.8rem;
+    }
+    #msg {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+    }
 }
