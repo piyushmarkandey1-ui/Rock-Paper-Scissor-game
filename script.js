@@ -1,73 +1,126 @@
-let userscore = 0;
-let compscore = 0;
-const choices=document.querySelectorAll('.choice');
-const msg=document.querySelector('#msg');
-const msgcontainer=document.querySelector('.msgcontainer');
-const userscoreElement=document.querySelector('#user-score');
-const compscoreElement=document.querySelector('#comp-score');
+let userScore = 0;
+let compScore = 0;
 
+const choices         = document.querySelectorAll('.choice');
+const msg             = document.querySelector('#msg');
+const msgContainer    = document.querySelector('#msg-container');
+const userScoreEl     = document.querySelector('#user-score');
+const compScoreEl     = document.querySelector('#comp-score');
+const battle          = document.querySelector('#battle');
+const userBattleChoice = document.querySelector('#user-battle-choice');
+const compBattleChoice = document.querySelector('#comp-battle-choice');
+const resetBtn        = document.querySelector('#reset-btn');
 
-const gencompchoice=()=>{
-    const options=['rock','paper','scissors'];
-    const ri=Math.floor(Math.random()*3);
-    return options[ri];
+// ── Helpers ──────────────────────────────────────────
 
-}
+const genCompChoice = () => {
+    const options = ['rock', 'paper', 'scissors'];
+    return options[Math.floor(Math.random() * 3)];
+};
 
-const showWinner=(userwin,userchoice,compchoice)=>{
-    if (userwin){
-        userscore++;
-        userscoreElement.innerText=userscore;
-        msg.innerText=`You win! ${userchoice} beats ${compchoice}`;
-        msg.style.backgroundColor="green";
-        msg.classList.remove("hide");
-        msgcontainer.classList.remove("hide");
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-    }
-    else{
-        compscore++;
-        compscoreElement.innerText=compscore;
-        msg.innerText=`You lose! ${compchoice} beats ${userchoice}`;
-        msg.style.backgroundColor="red";
-        msg.classList.remove("hide");
-        msgcontainer.classList.remove("hide");
-    }
-}
+const choiceImg = (name) => {
+    const img = document.createElement('img');
+    img.src = `${name}.png`;
+    img.alt = capitalize(name);
+    return img;
+};
 
-const playyourgame=(userchoice)=>{
-    console.log("User choice =",userchoice);
-    const compchoice=gencompchoice();
-    console.log("Computer choice =",compchoice);
+const bumpScore = (el) => {
+    el.classList.remove('bump');
+    void el.offsetWidth; // reflow to restart animation
+    el.classList.add('bump');
+    el.addEventListener('transitionend', () => el.classList.remove('bump'), { once: true });
+};
 
-    if(userchoice===compchoice){
-        console.log("It's a tie!");
-        msg.innerText="Draw!";
-        msg.classList.remove("hide");
-        msg.style.backgroundColor="#B89E97";
-        msgcontainer.classList.remove("hide");
-    }
-    else{
-        let userwin=true;
-        if(userchoice==="rock"){
-            userwin=compchoice==="paper"?false:true; 
-        }
-        else if(userchoice==="paper"){
-            userwin=compchoice==="scissors"?false:true;
-        }
-        else{
-            userwin=compchoice==="rock"?false:true;
-        }
-        showWinner(userwin,userchoice,compchoice);
+// ── Battle display ────────────────────────────────────
+
+const showBattle = (userChoice, compChoice, result) => {
+    // Populate images
+    userBattleChoice.innerHTML = '';
+    compBattleChoice.innerHTML = '';
+    userBattleChoice.appendChild(choiceImg(userChoice));
+    compBattleChoice.appendChild(choiceImg(compChoice));
+
+    // Reset animation classes
+    userBattleChoice.classList.remove('win-anim', 'lose-anim');
+    compBattleChoice.classList.remove('win-anim', 'lose-anim');
+
+    if (result === 'win') {
+        userBattleChoice.classList.add('win-anim');
+        compBattleChoice.classList.add('lose-anim');
+    } else if (result === 'lose') {
+        userBattleChoice.classList.add('lose-anim');
+        compBattleChoice.classList.add('win-anim');
     }
 
-    
-}
+    battle.classList.remove('hide');
+};
 
-choices.forEach((c)=>{
-    c.addEventListener('click',()=>{
-        const userchoice=c.getAttribute("id");
-        playyourgame(userchoice);
-  
+// ── Result message ────────────────────────────────────
 
+const showMsg = (text, type) => {
+    msg.textContent = text;
+    msg.className = type; // 'win' | 'lose' | 'draw'
+    msgContainer.classList.remove('hide');
+    resetBtn.classList.remove('hide');
+};
+
+// ── Core game logic ───────────────────────────────────
+
+const getResult = (user, comp) => {
+    if (user === comp) return 'draw';
+    if (
+        (user === 'rock'     && comp === 'scissors') ||
+        (user === 'paper'    && comp === 'rock')     ||
+        (user === 'scissors' && comp === 'paper')
+    ) return 'win';
+    return 'lose';
+};
+
+const playRound = (userChoice) => {
+    const compChoice = genCompChoice();
+    const result     = getResult(userChoice, compChoice);
+
+    // Highlight selected button briefly
+    choices.forEach(c => c.classList.remove('selected'));
+    document.getElementById(userChoice).classList.add('selected');
+
+    showBattle(userChoice, compChoice, result);
+
+    if (result === 'draw') {
+        showMsg(`It's a draw! Both chose ${capitalize(userChoice)}.`, 'draw');
+    } else if (result === 'win') {
+        userScore++;
+        userScoreEl.textContent = userScore;
+        bumpScore(userScoreEl);
+        showMsg(`You win! ${capitalize(userChoice)} beats ${capitalize(compChoice)}.`, 'win');
+    } else {
+        compScore++;
+        compScoreEl.textContent = compScore;
+        bumpScore(compScoreEl);
+        showMsg(`You lose! ${capitalize(compChoice)} beats ${capitalize(userChoice)}.`, 'lose');
+    }
+};
+
+// ── Reset ─────────────────────────────────────────────
+
+const resetGame = () => {
+    userScore = 0;
+    compScore = 0;
+    userScoreEl.textContent = '0';
+    compScoreEl.textContent = '0';
+    battle.classList.add('hide');
+    msgContainer.classList.add('hide');
+    resetBtn.classList.add('hide');
+    choices.forEach(c => c.classList.remove('selected'));
+};
+
+// ── Event listeners ───────────────────────────────────
+
+choices.forEach((c) => {
+    c.addEventListener('click', () => playRound(c.getAttribute('id')));
 });
-});
+
+resetBtn.addEventListener('click', resetGame);

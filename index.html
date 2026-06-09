@@ -3,35 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROCK PAPER SCISSORS</title>
+    <title>Rock Paper Scissors</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rock Paper Scissors</h1>
-    <div class="choices">
-        <div class="choice" id="paper">
-           <img src="paper.png" alt=""> 
+    <header>
+        <h1>Rock Paper Scissors</h1>
+    </header>
+
+    <main>
+        <!-- Scoreboard -->
+        <section class="scoreboard" aria-label="Score">
+            <div class="score-card">
+                <span class="score-label">You</span>
+                <span class="score-value" id="user-score">0</span>
+            </div>
+            <div class="score-divider">VS</div>
+            <div class="score-card">
+                <span class="score-label">Bot</span>
+                <span class="score-value" id="comp-score">0</span>
+            </div>
+        </section>
+
+        <!-- Battle display (shown after a pick) -->
+        <section class="battle hide" id="battle" aria-live="polite">
+            <div class="battle-side">
+                <p class="battle-label">You</p>
+                <div class="battle-choice" id="user-battle-choice"></div>
+            </div>
+            <div class="battle-vs">⚡</div>
+            <div class="battle-side">
+                <p class="battle-label">Bot</p>
+                <div class="battle-choice" id="comp-battle-choice"></div>
+            </div>
+        </section>
+
+        <!-- Result message -->
+        <div class="msg-container hide" id="msg-container">
+            <p id="msg"></p>
         </div>
-        <div class="choice" id="rock">
-           <img src="rock.png" alt=""> 
-        </div>
-        <div class="choice" id="scissors">
-           <img src="scissors.png" alt=""> 
-        </div>
-    </div>
-    <div class="scoreboard">
-        <div class="score">
-            <p id="user-score">0</p>
-            <p>YOU</p>
-        </div>
-        <div class="score">
-            <p id="comp-score">0</p>
-            <p>BOT</p>
-        </div>
-    </div>
-    <div class="msgcontainer hide">
-        <p id="msg" class="hide"></p>
-    </div>
+
+        <!-- Choices -->
+        <section class="choices" aria-label="Make your choice">
+            <button class="choice" id="rock" aria-label="Rock">
+                <img src="rock.png" alt="Rock">
+                <span class="choice-label">Rock</span>
+            </button>
+            <button class="choice" id="paper" aria-label="Paper">
+                <img src="paper.png" alt="Paper">
+                <span class="choice-label">Paper</span>
+            </button>
+            <button class="choice" id="scissors" aria-label="Scissors">
+                <img src="scissors.png" alt="Scissors">
+                <span class="choice-label">Scissors</span>
+            </button>
+        </section>
+
+        <!-- Reset -->
+        <button class="reset-btn hide" id="reset-btn">Reset Game</button>
+    </main>
 
     <script src="script.js"></script>
 </body>
